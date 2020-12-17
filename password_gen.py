@@ -5,9 +5,10 @@ import sys, getopt
 def main(argv):
 
     main.numberDiceRolls = ""
+    main.sourceWordlist = ""
 
     try:
-        opts, arg = getopt.getopt(argv,"hn:", ["help", "number="])
+        opts, arg = getopt.getopt(argv,"hns:", ["help", "number=", "source="])
     except getopt.GetoptError:
         print("Error!")
         sys.exit(2)
@@ -17,8 +18,15 @@ def main(argv):
             print("Please run as: password_gen.py -n 4\n")
             print("If you do not specify the number of words via -n the default number will run")
             sys.exit()
+
         elif opt in ("-n", "--number"):
             main.numberDiceRolls = int(arg)
+
+        elif opt in ("-s", "--source"):
+            if str(arg) == "eff":
+                main.sourceWordlist = "eff_large_wordlist.txt"
+            elif str(arg) == "heartsucker":
+                main.sourceWordlist = "heartsucker-wordlist.txt"
 
 def randRoll():
 
@@ -39,11 +47,17 @@ def genRandWords():
     else:
         numberOfRolls = main.numberDiceRolls
 
+    if main.sourceWordlist == "":
+        sourceWordlist = 'eff_large_wordlist.txt'
+    else:
+        sourceWordlist = main.sourceWordlist
+        
+
     wordArray = []
 
     for rolls in range(numberOfRolls):
         randRoll()
-        wordlist = pd.read_csv('eff_large_wordlist.txt', sep="\t")
+        wordlist = pd.read_csv(sourceWordlist, sep="\t")
         for row in wordlist.index:
             if wordlist["Dice"][row] == randRoll.diceRoll:
                 word = wordlist["Word"][row].capitalize()

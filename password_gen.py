@@ -1,7 +1,8 @@
 import pandas as pd
 import secrets
-import sys, getopt
 import argparse
+import string
+import random
 
 def main():
 
@@ -33,10 +34,9 @@ def randRoll():
 
     diceRoll = diceRoll_1, diceRoll_2, diceRoll_3, diceRoll_4, diceRoll_5
     randRoll.diceRoll = int("".join(map(str, diceRoll)))
-    print(randRoll.diceRoll)
 
 def genRandWords():
-        
+            
     wordArray = []
 
     for rolls in range(main.numberOfRolls):
@@ -48,9 +48,44 @@ def genRandWords():
                 wordArray.append(word)
     print(str("".join(map(str, wordArray))))
 
+def genRandLetters():
+
+    secretRandom = secrets.SystemRandom()
+
+    ascii_lowercase = string.ascii_lowercase
+    ascii_uppercase = string.ascii_uppercase
+    ascii_digits = string.digits
+    ascii_punctuation = string.punctuation
+    uppercase_count = 2
+    digits_count = 2
+    punctuation_count = 2
+    special_count = uppercase_count + digits_count + punctuation_count
+    lowercase_count = 16 - special_count
+    x = 0
+    lowercase_total = (''.join(secrets.choice(ascii_lowercase) for i in range(lowercase_count)))
+    uppercase_total = (''.join(secrets.choice(ascii_uppercase) for i in range(digits_count)))
+    digit_total = (''.join(secrets.choice(ascii_digits) for i in range(digits_count)))
+    puncuation_total = (''.join(secrets.choice(ascii_punctuation) for i in range(punctuation_count)))
+
+    random_password = lowercase_total + uppercase_total + digit_total + puncuation_total
+    random_password_array = []
+    random_password_count = len(random_password)
+    for i in random_password:
+        #temp = [i]
+        random_password_array.append(i)
+
+    random_password = (secretRandom.sample(random_password_array, len(random_password_array)))
+    print(str("".join(map(str, random_password))))
+    #random_password = secretRandom.shuffle(random_password_array)
+    #print(random_password)
+    #while x < y:
+    #    print(secrets.choice(ascii_lowercase))
+    #    x += 1
+
 #userInput()
 #genRandWords()
 
 if __name__ == "__main__":
     main()
     genRandWords()
+    genRandLetters()

@@ -8,19 +8,31 @@ def main():
 
     parser = argparse.ArgumentParser()
 
+    parser.add_argument('-r', '--random', action="store_true", help="This sets the password generator to generate random letters, digits, and characters.")
+    parser.add_argument('-w', '--wordlist', action="store_true", help="This sets the password generator to generate random words from a word list.")
     parser.add_argument('-n', '--number', type=int, default=4, help="This sets the number of words. If not used default number is 4.")
     parser.add_argument('-s', '--source', type=str, default="eff_large_wordlist.txt", choices=["eff", "heartsucker"], help="This sets which word list is used. Use 'eff' or 'heartsucker'. EFF is the default used.")
-
+    parser.add_argument('-u', '--uppercase', type=int, default=2, help="This sets the uppercase count of the random letter password. Default is 2")
+    parser.add_argument('-d', '--digits', type=int, default=2, help="This sets the digit count of the random letter password. Defualt is 2.")
+    parser.add_argument('-p', '--special', type=int, default=2, help="This sets the special count of the random letter password. Default is 2.")
+    parser.add_argument('-t', '--total', type=int, default=16, help="This sets the total count of the random letter password. Defualt is 16")
+    
     args = parser.parse_args()
 
+    main.setrandom = args.random
+    main.setwordlist = args.wordlist
+
     main.numberOfRolls = args.number
-
     main.sourceList = args.source
-
     if args.source == 'eff':
         main.sourceList = 'eff_large_wordlist.txt'
     elif args.source == 'heartsucker':
         main.sourceList = 'heartsucker-wordlist.txt'
+
+    main.uppercase = args.uppercase
+    main.digits = args.digits
+    main.special = args.special
+    main.total = args.total
 
 def randRoll():
 
@@ -55,19 +67,19 @@ def genRandLetters():
     ascii_lowercase = string.ascii_lowercase
     ascii_uppercase = string.ascii_uppercase
     ascii_digits = string.digits
-    ascii_punctuation = string.punctuation
-    uppercase_count = 2
-    digits_count = 2
-    punctuation_count = 2
-    special_count = uppercase_count + digits_count + punctuation_count
-    lowercase_count = 16 - special_count
+    ascii_special = string.punctuation
+    uppercase_count = main.uppercase
+    digits_count = main.digits
+    special_count = main.special
+    special_count = uppercase_count + digits_count + special_count
+    lowercase_count = main.total - special_count
     x = 0
     lowercase_total = (''.join(secrets.choice(ascii_lowercase) for i in range(lowercase_count)))
     uppercase_total = (''.join(secrets.choice(ascii_uppercase) for i in range(digits_count)))
     digit_total = (''.join(secrets.choice(ascii_digits) for i in range(digits_count)))
-    puncuation_total = (''.join(secrets.choice(ascii_punctuation) for i in range(punctuation_count)))
+    special_total = (''.join(secrets.choice(ascii_special) for i in range(special_count)))
 
-    random_password = lowercase_total + uppercase_total + digit_total + puncuation_total
+    random_password = lowercase_total + uppercase_total + digit_total + special_total
     random_password_array = []
     random_password_count = len(random_password)
     for i in random_password:
@@ -76,16 +88,10 @@ def genRandLetters():
 
     random_password = (secretRandom.sample(random_password_array, len(random_password_array)))
     print(str("".join(map(str, random_password))))
-    #random_password = secretRandom.shuffle(random_password_array)
-    #print(random_password)
-    #while x < y:
-    #    print(secrets.choice(ascii_lowercase))
-    #    x += 1
-
-#userInput()
-#genRandWords()
 
 if __name__ == "__main__":
     main()
-    genRandWords()
-    genRandLetters()
+    if main.setwordlist:
+        genRandWords()
+    if main.setrandom:
+        genRandLetters()
